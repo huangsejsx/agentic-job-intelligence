@@ -16,8 +16,43 @@ class SemanticDecisionResult:
     keyword_missing_skills: List[str]
     final_matched_skills: List[str]
     final_missing_skills: List[str]
+    final_preferred_matched_skills: List[str]
+    final_preferred_missing_skills: List[str]
+    score_breakdown: Dict[str, Any]
     semantic_evidence: List[Dict[str, Any]]
     explanation: str
+
+def build_semantic_score_breakdown(match_result) -> Dict[str, Any]:
+    return {
+        "required_keyword_score": match_result.required_keyword_score,
+        "preferred_keyword_score": match_result.preferred_keyword_score,
+        "weighted_keyword_score": match_result.keyword_score,
+        "required_semantic_score": match_result.required_semantic_score,
+        "preferred_semantic_score": match_result.preferred_semantic_score,
+        "weighted_semantic_score": match_result.semantic_score,
+        "required_weight": match_result.required_weight,
+        "preferred_weight": match_result.preferred_weight,
+        "matched_required_skill_count": len(match_result.final_matched_skills),
+        "missing_required_skill_count": len(match_result.final_missing_skills),
+        "matched_preferred_skill_count": len(match_result.final_preferred_matched_skills),
+        "missing_preferred_skill_count": len(match_result.final_preferred_missing_skills)
+    }
+
+def build_hard_filter_score_breakdown(jd_info: JDInfo) -> Dict[str, Any]:
+    return {
+        "required_keyword_score": 0.0,
+        "preferred_keyword_score": 0.0,
+        "weighted_keyword_score": 0.0,
+        "required_semantic_score": 0.0,
+        "preferred_semantic_score": 0.0,
+        "weighted_semantic_score": 0.0,
+        "required_weight": 0.8,
+        "preferred_weight": 0.2,
+        "matched_required_skill_count": 0,
+        "missing_required_skill_count": len(jd_info.required_skills),
+        "matched_preferred_skill_count": 0,
+        "missing_preferred_skill_count": len(jd_info.preferred_skills)
+    }
 
 def make_semantic_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> SemanticDecisionResult:
     if jd_info.requires_phd or jd_info.requires_many_years:
@@ -32,6 +67,9 @@ def make_semantic_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> Semantic
             keyword_missing_skills=jd_info.required_skills,
             final_matched_skills=[],
             final_missing_skills=jd_info.required_skills,
+            final_preferred_matched_skills=[],
+            final_preferred_missing_skills=jd_info.preferred_skills,
+            score_breakdown=build_hard_filter_score_breakdown(jd_info),
             semantic_evidence=[],
             explanation=f"Pass because the role has a hard requirement: {jd_info.hard_filter_reason}"
         )
@@ -40,6 +78,7 @@ def make_semantic_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> Semantic
     for item in match_result.semantic_matches:
         semantic_evidence.append({
             "jd_skill": item.jd_skill,
+            "skill_type": item.skill_type,
             "best_resume_evidence": item.best_resume_evidence,
             "similarity": item.similarity,
             "is_semantic_match": item.is_semantic_match
@@ -54,6 +93,7 @@ def make_semantic_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> Semantic
     else:
         decision = "Pass"
         explanation = "Pass because the semantic match score is low."
+    score_breakdown = build_semantic_score_breakdown(match_result)
     return SemanticDecisionResult(
         decision=decision,
         final_score=score,
@@ -65,6 +105,9 @@ def make_semantic_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> Semantic
         keyword_missing_skills=match_result.keyword_missing_skills,
         final_matched_skills=match_result.final_matched_skills,
         final_missing_skills=match_result.final_missing_skills,
+        final_preferred_matched_skills=match_result.final_preferred_matched_skills,
+        final_preferred_missing_skills=match_result.final_preferred_missing_skills,
+        score_breakdown=score_breakdown,
         semantic_evidence=semantic_evidence,
         explanation=explanation
     )

@@ -19,6 +19,25 @@ class WeightedSkillMatchResult:
     required_weight: float
     preferred_weight: float
 
+def combine_required_preferred_scores(
+    required_score: float,
+    preferred_score: float,
+    has_required_skills: bool,
+    has_preferred_skills: bool,
+    required_weight: float = 0.8
+) -> float:
+    preferred_weight = 1.0 - required_weight
+    if has_required_skills and has_preferred_skills:
+        return round(
+            required_weight * required_score + preferred_weight * preferred_score,
+            4
+        )
+    if has_required_skills:
+        return round(required_score, 4)
+    if has_preferred_skills:
+        return round(preferred_score, 4)
+    return 0.0
+
 def calculate_skill_match(jd_skills: List[str], resume_skills: List[str]) -> SkillMatchResult:
     jd_set = set(jd_skills)
     resume_set = set(resume_skills)
@@ -42,17 +61,17 @@ def calculate_weighted_skill_match(
     preferred_weight = round(1.0 - required_weight, 4)
     required_result = calculate_skill_match(required_skills, resume_skills)
     preferred_result = calculate_skill_match(preferred_skills, resume_skills)
-    if preferred_skills:
-        weighted_score = (
-            required_weight * required_result.skill_match_score
-            + preferred_weight * preferred_result.skill_match_score
-        )
-    else:
-        weighted_score = required_result.skill_match_score
+    weighted_score = combine_required_preferred_scores(
+        required_result.skill_match_score,
+        preferred_result.skill_match_score,
+        bool(required_skills),
+        bool(preferred_skills),
+        required_weight
+    )
     return WeightedSkillMatchResult(
         required_result=required_result,
         preferred_result=preferred_result,
-        weighted_score=round(weighted_score, 4),
+        weighted_score=weighted_score,
         required_weight=required_weight,
         preferred_weight=preferred_weight
     )

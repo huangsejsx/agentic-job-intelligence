@@ -54,6 +54,22 @@ def hard_filter_pass_node(state: JobAgentState) -> JobAgentState:
         "keyword_missing_skills": jd_info["required_skills"],
         "final_matched_skills": [],
         "final_missing_skills": jd_info["required_skills"],
+        "final_preferred_matched_skills": [],
+        "final_preferred_missing_skills": jd_info.get("preferred_skills", []),
+        "score_breakdown": {
+            "required_keyword_score": 0.0,
+            "preferred_keyword_score": 0.0,
+            "weighted_keyword_score": 0.0,
+            "required_semantic_score": 0.0,
+            "preferred_semantic_score": 0.0,
+            "weighted_semantic_score": 0.0,
+            "required_weight": 0.8,
+            "preferred_weight": 0.2,
+            "matched_required_skill_count": 0,
+            "missing_required_skill_count": len(jd_info["required_skills"]),
+            "matched_preferred_skill_count": 0,
+            "missing_preferred_skill_count": len(jd_info.get("preferred_skills", []))
+        },
         "semantic_evidence": [],
         "explanation": f"Pass because the role has a hard requirement: {reason}"
     }

@@ -126,6 +126,38 @@ if st.button("Analyze Job Fit"):
         metric_col3.metric("Semantic Score", round(decision.get("semantic_score", 0.0), 4))
 
         st.write(decision.get("explanation", ""))
+        score_breakdown = decision.get("score_breakdown", {})
+        if score_breakdown:
+            st.subheader("Score Breakdown")
+            st.dataframe(
+                pd.DataFrame([
+                    {
+                        "Component": "Required skills",
+                        "Keyword Score": score_breakdown.get("required_keyword_score", 0.0),
+                        "Semantic Score": score_breakdown.get("required_semantic_score", 0.0),
+                        "Weight": score_breakdown.get("required_weight", 0.0),
+                        "Matched": score_breakdown.get("matched_required_skill_count", 0),
+                        "Missing": score_breakdown.get("missing_required_skill_count", 0)
+                    },
+                    {
+                        "Component": "Preferred skills",
+                        "Keyword Score": score_breakdown.get("preferred_keyword_score", 0.0),
+                        "Semantic Score": score_breakdown.get("preferred_semantic_score", 0.0),
+                        "Weight": score_breakdown.get("preferred_weight", 0.0),
+                        "Matched": score_breakdown.get("matched_preferred_skill_count", 0),
+                        "Missing": score_breakdown.get("missing_preferred_skill_count", 0)
+                    },
+                    {
+                        "Component": "Weighted total",
+                        "Keyword Score": score_breakdown.get("weighted_keyword_score", 0.0),
+                        "Semantic Score": score_breakdown.get("weighted_semantic_score", 0.0),
+                        "Weight": 1.0,
+                        "Matched": None,
+                        "Missing": None
+                    }
+                ]),
+                width="stretch"
+            )
 
         st.subheader("Structured JD Extraction")
         jd_col1, jd_col2, jd_col3 = st.columns(3)
@@ -136,6 +168,10 @@ if st.button("Analyze Job Fit"):
         st.write("**Required Skills:**")
         required_skills = structured_jd.get("required_skills", [])
         st.write(", ".join(required_skills) if required_skills else "None")
+
+        st.write("**Preferred Skills:**")
+        preferred_skills = structured_jd.get("preferred_skills", [])
+        st.write(", ".join(preferred_skills) if preferred_skills else "None")
 
         st.write("**Responsibilities:**")
         responsibilities = structured_jd.get("responsibilities", [])
@@ -169,17 +205,36 @@ if st.button("Analyze Job Fit"):
             else:
                 st.write("None")
 
+        preferred_match_col1, preferred_match_col2 = st.columns(2)
+
+        with preferred_match_col1:
+            st.write("**Preferred Matched Skills**")
+            final_preferred_matched_skills = decision.get("final_preferred_matched_skills", [])
+            if final_preferred_matched_skills:
+                st.write(", ".join(final_preferred_matched_skills))
+            else:
+                st.write("None")
+
+        with preferred_match_col2:
+            st.write("**Preferred Missing Skills**")
+            final_preferred_missing_skills = decision.get("final_preferred_missing_skills", [])
+            if final_preferred_missing_skills:
+                st.write(", ".join(final_preferred_missing_skills))
+            else:
+                st.write("None")
+
         st.subheader("Semantic Evidence")
         evidence_rows = []
         for item in decision.get("semantic_evidence", []):
             evidence_rows.append({
                 "JD Skill": item["jd_skill"],
+                "Skill Type": item.get("skill_type", "required"),
                 "Best Resume Evidence": item["best_resume_evidence"],
                 "Similarity": item["similarity"],
                 "Semantic Match": item["is_semantic_match"]
             })
         if evidence_rows:
-            st.dataframe(pd.DataFrame(evidence_rows), use_container_width=True)
+            st.dataframe(pd.DataFrame(evidence_rows), width="stretch")
         else:
             st.write("No semantic evidence available.")
 

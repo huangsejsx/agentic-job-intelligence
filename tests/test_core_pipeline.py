@@ -1,7 +1,11 @@
 from textwrap import dedent
 
 from decision_engine import make_decision
-from match_skills import calculate_skill_match, calculate_weighted_skill_match
+from match_skills import (
+    calculate_skill_match,
+    calculate_weighted_skill_match,
+    combine_required_preferred_scores
+)
 from parse_jd import parse_jd
 from parse_resume import parse_resume
 
@@ -97,6 +101,17 @@ def test_calculate_weighted_skill_match_scores_required_and_preferred():
     assert result.required_result.skill_match_score == 1.0
     assert result.preferred_result.skill_match_score == 0.5
     assert result.weighted_score == 0.9
+
+
+def test_combine_required_preferred_scores_handles_preferred_only():
+    score = combine_required_preferred_scores(
+        required_score=0.0,
+        preferred_score=1.0,
+        has_required_skills=False,
+        has_preferred_skills=True
+    )
+
+    assert score == 1.0
 
 
 def test_make_decision_respects_hard_filter():
