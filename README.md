@@ -2,6 +2,19 @@
 
 > Public repository note: this repo uses anonymized sample data. Generated result files are excluded because they may contain resume-derived information.
 
+## Portfolio Summary
+
+Agentic Job Intelligence is an explainable job-fit analysis system that evaluates a job description against a resume and returns an `Apply`, `Maybe`, or `Pass` recommendation.
+
+Unlike a simple chatbot wrapper, this project decomposes the decision process into a traceable pipeline: structured JD parsing, resume parsing, hard-filter detection, keyword matching, semantic matching, calibrated decision rules, and Streamlit-based result visualization.
+
+Key highlights:
+
+- Built a LangGraph workflow with conditional routing for hard-filter cases.
+- Used sentence-transformer embeddings to match JD requirements with resume evidence beyond exact keyword overlap.
+- Added threshold calibration and error analysis to reduce semantic over-matching on borderline roles.
+- Developed an interactive Streamlit demo showing scores, matched/missing skills, semantic evidence, and workflow trace.
+
 ## 1. 项目简介
 
 Agentic Job Intelligence 是一个面向求职场景的智能岗位分析系统。系统输入一份 Job Description 和一份 Resume，自动完成 JD 结构化抽取、简历解析、技能匹配、语义匹配、hard filter 检测、决策校准，并输出 Apply / Maybe / Pass 的岗位申请建议。
