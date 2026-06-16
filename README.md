@@ -343,7 +343,22 @@ Demo 页面包括：
 - Semantic Evidence
 - Workflow Trace
 
-## 9. Key Findings
+## 9. Tests
+
+运行不依赖大模型的核心逻辑测试：
+
+    pip install -r requirements-dev.txt
+    pytest
+
+当前测试覆盖：
+
+- JD parser
+- Resume parser
+- hard filter detection
+- skill matching
+- baseline decision rule
+
+## 10. Key Findings
 
 本项目的主要发现包括：
 
@@ -355,7 +370,7 @@ Demo 页面包括：
 6. Workflow trace 能提升 agent system 的可解释性；
 7. Streamlit Demo 能让 pipeline 更适合展示和面试讲解。
 
-## 10. Limitations
+## 11. Limitations
 
 当前项目仍有以下局限：
 
@@ -368,7 +383,7 @@ Demo 页面包括：
 7. 当前 threshold 可能对 toy set 过拟合；
 8. 当前 Demo 还没有支持 batch JD analysis。
 
-## 11. Future Work
+## 12. Future Work
 
 后续可以继续改进：
 
