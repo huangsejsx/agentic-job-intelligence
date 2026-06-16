@@ -137,3 +137,33 @@ def test_make_decision_apply_for_high_keyword_overlap():
     assert decision.decision == "Apply"
     assert decision.hard_filter_triggered is False
     assert decision.final_score == 1.0
+
+
+def test_make_decision_exposes_weighted_score_breakdown():
+    jd_info = parse_jd(dedent("""
+    Data Analyst Intern
+    Company: ExampleCommerce
+
+    Requirements:
+    - Python and SQL.
+
+    Preferred Qualifications:
+    - Tableau.
+    - Power BI.
+    """))
+    resume_info = parse_resume(dedent("""
+    Alex Chen
+
+    Skills:
+    Python, SQL
+    """))
+
+    decision = make_decision(jd_info, resume_info)
+
+    assert decision.final_score == 0.8
+    assert decision.score_breakdown["required_skill_score"] == 1.0
+    assert decision.score_breakdown["preferred_skill_score"] == 0.0
+    assert decision.score_breakdown["required_weight"] == 0.8
+    assert decision.score_breakdown["preferred_weight"] == 0.2
+    assert decision.score_breakdown["matched_required_skill_count"] == 2
+    assert decision.score_breakdown["missing_preferred_skill_count"] == 2
