@@ -11,6 +11,14 @@ class SkillMatchResult:
     missing_skills: List[str]
     skill_match_score: float
 
+@dataclass
+class WeightedSkillMatchResult:
+    required_result: SkillMatchResult
+    preferred_result: SkillMatchResult
+    weighted_score: float
+    required_weight: float
+    preferred_weight: float
+
 def calculate_skill_match(jd_skills: List[str], resume_skills: List[str]) -> SkillMatchResult:
     jd_set = set(jd_skills)
     resume_set = set(resume_skills)
@@ -23,6 +31,30 @@ def calculate_skill_match(jd_skills: List[str], resume_skills: List[str]) -> Ski
         matched_skills=matched,
         missing_skills=missing,
         skill_match_score=round(score, 4)
+    )
+
+def calculate_weighted_skill_match(
+    required_skills: List[str],
+    preferred_skills: List[str],
+    resume_skills: List[str],
+    required_weight: float = 0.8
+) -> WeightedSkillMatchResult:
+    preferred_weight = round(1.0 - required_weight, 4)
+    required_result = calculate_skill_match(required_skills, resume_skills)
+    preferred_result = calculate_skill_match(preferred_skills, resume_skills)
+    if preferred_skills:
+        weighted_score = (
+            required_weight * required_result.skill_match_score
+            + preferred_weight * preferred_result.skill_match_score
+        )
+    else:
+        weighted_score = required_result.skill_match_score
+    return WeightedSkillMatchResult(
+        required_result=required_result,
+        preferred_result=preferred_result,
+        weighted_score=round(weighted_score, 4),
+        required_weight=required_weight,
+        preferred_weight=preferred_weight
     )
 
 def read_text(path: str) -> str:

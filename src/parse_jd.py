@@ -49,6 +49,27 @@ SKILL_PATTERNS = {
     "data visualization": [r"\bvisualization\b", r"\bvisualisation\b", r"\bdata viz\b", r"\bdashboard"]
 }
 
+PREFERRED_SECTION_HEADERS = {
+    "preferred qualifications",
+    "preferred requirements",
+    "nice to have",
+    "nice-to-have",
+    "bonus points",
+    "preferred skills"
+}
+
+SECTION_HEADERS = {
+    "responsibilities",
+    "requirements",
+    "minimum qualifications",
+    "qualifications",
+    "location",
+    "about the job",
+    "who we are",
+    "about the team",
+    *PREFERRED_SECTION_HEADERS
+}
+
 def extract_title(text: str) -> Optional[str]:
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     return lines[0] if lines else None
@@ -74,6 +95,30 @@ def extract_skills(text: str) -> List[str]:
                 skills.append(skill)
                 break
     return sorted(set(skills))
+
+def extract_preferred_text(text: str) -> str:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    preferred_lines = []
+    collecting_preferred_section = False
+    for line in lines:
+        lower_line = line.lower().strip(":")
+        if lower_line in PREFERRED_SECTION_HEADERS:
+            collecting_preferred_section = True
+            continue
+        if collecting_preferred_section and lower_line in SECTION_HEADERS:
+            collecting_preferred_section = False
+        if collecting_preferred_section:
+            preferred_lines.append(line)
+            continue
+        if any(marker in lower_line for marker in ["preferred", "is a plus", "nice to have"]):
+            preferred_lines.append(line)
+    return "\n".join(preferred_lines)
+
+def split_required_preferred_skills(text: str) -> tuple[List[str], List[str]]:
+    all_skills = extract_skills(text)
+    preferred_skills = extract_skills(extract_preferred_text(text))
+    required_skills = sorted(set(all_skills) - set(preferred_skills))
+    return required_skills, preferred_skills
 
 def extract_education(text: str) -> List[str]:
     lower_text = text.lower()
@@ -108,15 +153,15 @@ def check_hard_filters(text: str, experience_years: Optional[int]) -> tuple[bool
 def parse_jd(text: str) -> JDInfo:
     title = extract_title(text)
     company = extract_company(text)
-    skills = extract_skills(text)
+    required_skills, preferred_skills = split_required_preferred_skills(text)
     education = extract_education(text)
     experience_years = extract_experience_years(text)
     requires_phd, requires_many_years, hard_filter_reason = check_hard_filters(text, experience_years)
     return JDInfo(
         title=title,
         company=company,
-        required_skills=skills,
-        preferred_skills=[],
+        required_skills=required_skills,
+        preferred_skills=preferred_skills,
         education_requirements=education,
         experience_years=experience_years,
         requires_phd=requires_phd,

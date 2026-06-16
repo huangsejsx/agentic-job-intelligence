@@ -2,7 +2,7 @@ from dataclasses import dataclass, asdict
 from typing import List, Optional
 from parse_jd import parse_jd, JDInfo
 from parse_resume import parse_resume, ResumeInfo
-from match_skills import calculate_skill_match, SkillMatchResult
+from match_skills import calculate_weighted_skill_match
 
 @dataclass
 class DecisionResult:
@@ -16,7 +16,12 @@ class DecisionResult:
     explanation: str
 
 def make_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> DecisionResult:
-    skill_result = calculate_skill_match(jd_info.required_skills, resume_info.skills)
+    weighted_result = calculate_weighted_skill_match(
+        jd_info.required_skills,
+        jd_info.preferred_skills,
+        resume_info.skills
+    )
+    skill_result = weighted_result.required_result
     if jd_info.requires_phd or jd_info.requires_many_years:
         return DecisionResult(
             decision="Pass",
@@ -28,22 +33,22 @@ def make_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> DecisionResult:
             missing_skills=skill_result.missing_skills,
             explanation=f"Pass because the role has a hard requirement: {jd_info.hard_filter_reason}"
         )
-    score = skill_result.skill_match_score
+    score = weighted_result.weighted_score
     if score >= 0.65:
         decision = "Apply"
-        explanation = "Apply because the skill match score is high and no hard filter is triggered."
+        explanation = "Apply because the weighted required/preferred skill match score is high and no hard filter is triggered."
     elif score >= 0.4:
         decision = "Maybe"
-        explanation = "Maybe because the role has partial skill overlap but some important skills are missing."
+        explanation = "Maybe because the role has partial weighted skill overlap but some important skills are missing."
     else:
         decision = "Pass"
-        explanation = "Pass because the skill match score is low."
+        explanation = "Pass because the weighted skill match score is low."
     return DecisionResult(
         decision=decision,
         final_score=score,
         hard_filter_triggered=False,
         hard_filter_reason=None,
-        skill_match_score=skill_result.skill_match_score,
+        skill_match_score=score,
         matched_skills=skill_result.matched_skills,
         missing_skills=skill_result.missing_skills,
         explanation=explanation

@@ -1,7 +1,7 @@
 from textwrap import dedent
 
 from decision_engine import make_decision
-from match_skills import calculate_skill_match
+from match_skills import calculate_skill_match, calculate_weighted_skill_match
 from parse_jd import parse_jd
 from parse_resume import parse_resume
 
@@ -24,6 +24,27 @@ def test_parse_jd_extracts_skills_and_hard_filters():
     assert jd_info.requires_phd is True
     assert jd_info.requires_many_years is True
     assert jd_info.hard_filter_reason == "Requires PhD or doctoral-level qualification."
+
+
+def test_parse_jd_separates_preferred_skills():
+    jd_text = dedent("""
+    Data Analyst Intern
+    Company: ExampleCommerce
+
+    Requirements:
+    - Strong Python and SQL skills.
+    - Familiarity with statistics and data analysis.
+
+    Preferred Qualifications:
+    - Experience with Tableau or Power BI is preferred.
+    - Interest in recommendation systems is a plus.
+    """)
+
+    jd_info = parse_jd(jd_text)
+
+    assert {"python", "sql", "statistics", "data analysis"}.issubset(jd_info.required_skills)
+    assert {"tableau", "power bi", "recommendation"}.issubset(jd_info.preferred_skills)
+    assert "tableau" not in jd_info.required_skills
 
 
 def test_parse_resume_extracts_sections_and_skills():
@@ -64,6 +85,18 @@ def test_calculate_skill_match_scores_overlap():
     assert result.matched_skills == ["python", "sql"]
     assert result.missing_skills == ["tableau"]
     assert result.skill_match_score == 0.6667
+
+
+def test_calculate_weighted_skill_match_scores_required_and_preferred():
+    result = calculate_weighted_skill_match(
+        required_skills=["python", "sql"],
+        preferred_skills=["tableau", "power bi"],
+        resume_skills=["python", "sql", "tableau"]
+    )
+
+    assert result.required_result.skill_match_score == 1.0
+    assert result.preferred_result.skill_match_score == 0.5
+    assert result.weighted_score == 0.9
 
 
 def test_make_decision_respects_hard_filter():
