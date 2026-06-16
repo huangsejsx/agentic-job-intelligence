@@ -6,10 +6,7 @@ import streamlit as st
 
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from structured_jd_extractor import extract_jd_structured
-from parse_resume import parse_resume
-from semantic_decision_engine import make_semantic_decision
-from parse_jd import parse_jd
+from agent_workflow_structured import run_structured_workflow
 
 st.set_page_config(
     page_title="Agentic Job Intelligence",
@@ -84,17 +81,27 @@ with col2:
     resume_text = st.text_area("Resume", value=default_resume, height=420)
 
 def run_analysis(jd_text: str, resume_text: str):
-    structured_jd = extract_jd_structured(jd_text)
-    resume_info = parse_resume(resume_text)
-    rule_jd = parse_jd(jd_text)
-    decision = make_semantic_decision(rule_jd, resume_info)
-    trace = [
-        "structured_jd_extraction",
-        "parse_resume",
-        "make_semantic_decision",
-        "save_result"
-    ]
-    return structured_jd, resume_info, decision, trace
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_path = Path(tmp_dir)
+        jd_path = tmp_path / "job_description.txt"
+        resume_path = tmp_path / "resume.txt"
+        output_path = tmp_path / "decision.json"
+
+        jd_path.write_text(jd_text, encoding="utf-8")
+        resume_path.write_text(resume_text, encoding="utf-8")
+
+        state = run_structured_workflow(
+            jd_path=str(jd_path),
+            resume_path=str(resume_path),
+            output_path=str(output_path)
+        )
+
+    return (
+        state["jd_info"],
+        state.get("resume_info"),
+        state["decision"],
+        state.get("trace", [])
+    )
 
 if st.button("Analyze Job Fit"):
     if not jd_text.strip() or not resume_text.strip():
@@ -105,7 +112,7 @@ if st.button("Analyze Job Fit"):
 
         st.subheader("Final Decision")
 
-        decision_label = decision.decision
+        decision_label = decision["decision"]
         if decision_label == "Apply":
             st.success(f"Decision: {decision_label}")
         elif decision_label == "Maybe":
@@ -114,52 +121,57 @@ if st.button("Analyze Job Fit"):
             st.error(f"Decision: {decision_label}")
 
         metric_col1, metric_col2, metric_col3 = st.columns(3)
-        metric_col1.metric("Final Score", round(decision.final_score, 4))
-        metric_col2.metric("Keyword Score", round(decision.keyword_score, 4))
-        metric_col3.metric("Semantic Score", round(decision.semantic_score, 4))
+        metric_col1.metric("Final Score", round(decision.get("final_score", 0.0), 4))
+        metric_col2.metric("Keyword Score", round(decision.get("keyword_score", 0.0), 4))
+        metric_col3.metric("Semantic Score", round(decision.get("semantic_score", 0.0), 4))
 
-        st.write(decision.explanation)
+        st.write(decision.get("explanation", ""))
 
         st.subheader("Structured JD Extraction")
         jd_col1, jd_col2, jd_col3 = st.columns(3)
-        jd_col1.write(f"**Title:** {structured_jd.title}")
-        jd_col2.write(f"**Company:** {structured_jd.company}")
-        jd_col3.write(f"**Location:** {structured_jd.location}")
+        jd_col1.write(f"**Title:** {structured_jd.get('title')}")
+        jd_col2.write(f"**Company:** {structured_jd.get('company')}")
+        jd_col3.write(f"**Location:** {structured_jd.get('location')}")
 
         st.write("**Required Skills:**")
-        st.write(", ".join(structured_jd.required_skills) if structured_jd.required_skills else "None")
+        required_skills = structured_jd.get("required_skills", [])
+        st.write(", ".join(required_skills) if required_skills else "None")
 
         st.write("**Responsibilities:**")
-        if structured_jd.responsibilities:
-            for item in structured_jd.responsibilities:
+        responsibilities = structured_jd.get("responsibilities", [])
+        if responsibilities:
+            for item in responsibilities:
                 st.write(f"- {item}")
         else:
             st.write("None")
 
         st.subheader("Resume Parsing")
         st.write("**Skills extracted from resume:**")
-        st.write(", ".join(resume_info.skills) if resume_info.skills else "None")
+        resume_skills = (resume_info or {}).get("skills", [])
+        st.write(", ".join(resume_skills) if resume_skills else "None")
 
         st.subheader("Skill Matching")
         match_col1, match_col2 = st.columns(2)
 
         with match_col1:
             st.write("**Final Matched Skills**")
-            if decision.final_matched_skills:
-                st.write(", ".join(decision.final_matched_skills))
+            final_matched_skills = decision.get("final_matched_skills", [])
+            if final_matched_skills:
+                st.write(", ".join(final_matched_skills))
             else:
                 st.write("None")
 
         with match_col2:
             st.write("**Final Missing Skills**")
-            if decision.final_missing_skills:
-                st.write(", ".join(decision.final_missing_skills))
+            final_missing_skills = decision.get("final_missing_skills", [])
+            if final_missing_skills:
+                st.write(", ".join(final_missing_skills))
             else:
                 st.write("None")
 
         st.subheader("Semantic Evidence")
         evidence_rows = []
-        for item in decision.semantic_evidence:
+        for item in decision.get("semantic_evidence", []):
             evidence_rows.append({
                 "JD Skill": item["jd_skill"],
                 "Best Resume Evidence": item["best_resume_evidence"],
