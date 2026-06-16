@@ -1,0 +1,20 @@
+Alex Chen
+
+Education:
+MSc Statistics, Example University
+BSc Mathematics and Statistics
+
+Skills:
+Python, SQL, Pandas, NumPy, Scikit-learn, Machine Learning, Deep Learning, Statistics, Data Analysis, A/B Testing, Recommender Systems, Ranking, RAG, LangChain, Streamlit
+
+Projects:
+MiniOneRec-style Generative Recommendation Reproduction
+Built a MovieLens-based recommendation system with implicit feedback preprocessing, temporal leave-one-out split, Popularity baseline, ItemCF baseline, Semantic ID construction, SID-Markov baseline, and Transformer-based sequential recommendation model.
+Evaluated models using Recall@K, NDCG@K, coverage, head-tail distribution, and user/item group analysis.
+
+Agentic Job Intelligence System
+Built an AI Agent system using RAG, tool calling, structured extraction, hard-filter detection, skill matching, and explainable scoring.
+
+Experience:
+Data Analysis Internship
+Worked on data cleaning, business analysis, SQL queries, reporting, and performance tracking.

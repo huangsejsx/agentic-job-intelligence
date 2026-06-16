@@ -1,0 +1,9 @@
+Machine Learning Scientist
+Company: ResearchAI
+
+We are looking for a Machine Learning Scientist to work on large-scale deep learning and NLP systems.
+
+Requirements:
+- PhD in Computer Science, Machine Learning, Statistics, or a related field.
+- 5+ years of industry experience.
+- Strong Python, PyTorch, deep learning, NLP, and LLM experience.

@@ -1,0 +1,38 @@
+About the job
+
+Business Intelligence Intern - Marketplace Analytics
+
+Who We Are
+
+DemoShop is a fast-growing e-commerce platform connecting buyers, sellers, and creators across multiple regions. Our marketplace analytics team works closely with product, operations, and strategy teams to improve user growth, seller performance, conversion, and retention.
+
+About the team
+
+The Marketplace Analytics team is responsible for building data-driven insights and supporting product decisions. We work on dashboards, experimentation, funnel analysis, seller segmentation, and recommendation-related business problems.
+
+Responsibilities
+
+- Analyze user behavior, conversion funnels, retention, GMV, and seller performance.
+- Build dashboards and automated reports to monitor business metrics.
+- Work with product managers to design and evaluate A/B tests.
+- Use SQL and Python to clean, transform, and analyze large-scale marketplace data.
+- Support search, ranking, and recommendation-related analysis.
+- Communicate insights clearly to technical and non-technical stakeholders.
+
+Minimum Qualifications
+
+- Currently pursuing a Bachelor's or Master's degree in Statistics, Mathematics, Computer Science, Data Science, Economics, or a related quantitative field.
+- Strong analytical thinking and problem-solving skills.
+- Proficiency in SQL and Python.
+- Familiarity with statistics, data analysis, data visualization, and experimental design.
+- Good communication skills.
+
+Preferred Qualifications
+
+- Experience with pandas, scikit-learn, Tableau, Power BI, or similar analytics tools.
+- Interest in e-commerce, marketplace platforms, search, ranking, recommendation systems, or AI products.
+- Experience with dashboarding, reporting, or business intelligence projects.
+
+Location
+
+London, United Kingdom

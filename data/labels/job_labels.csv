@@ -1,0 +1,5 @@
+job_file,true_label
+sample_jd_1.txt,Maybe
+sample_jd_2_hard_filter.txt,Pass
+sample_jd_3_apply.txt,Apply
+sample_jd_4_complex_format.txt,Apply

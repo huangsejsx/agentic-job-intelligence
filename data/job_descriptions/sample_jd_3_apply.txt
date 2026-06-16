@@ -1,0 +1,10 @@
+Machine Learning Intern
+Company: AppliedAI Lab
+
+We are looking for a Machine Learning Intern to work on data analysis, recommendation systems, and ranking models.
+
+Requirements:
+- Currently pursuing a Bachelor's or Master's degree in Statistics, Mathematics, Computer Science, or related field.
+- Strong Python, SQL, pandas, NumPy, scikit-learn, statistics, and machine learning skills.
+- Experience with recommender systems, ranking, A/B testing, and data analysis is preferred.
+- Interest in RAG, AI agents, or LLM applications is a plus.

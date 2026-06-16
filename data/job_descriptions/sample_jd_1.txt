@@ -1,0 +1,16 @@
+Data Analyst Intern
+Company: DemoCommerce
+
+We are looking for a Data Analyst Intern to join our marketplace analytics team.
+
+Responsibilities:
+- Analyze user behavior, conversion funnel, retention, and GMV trends.
+- Build dashboards and reports using SQL, Excel, Tableau, or Power BI.
+- Design and evaluate A/B tests for new product features.
+- Work with product managers to define metrics and track business performance.
+
+Requirements:
+- Currently pursuing a Bachelor's or Master's degree in Statistics, Mathematics, Computer Science, Data Science, or a related field.
+- Strong skills in Python and SQL.
+- Familiarity with pandas, data visualization, statistics, and machine learning.
+- Interest in e-commerce, recommendation systems, search, ranking, or online marketplaces is a plus.
