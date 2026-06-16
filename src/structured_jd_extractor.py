@@ -5,7 +5,7 @@ from typing import List, Optional
 from parse_jd import parse_jd
 
 @dataclass
-class LLMJDInfo:
+class StructuredJDInfo:
     title: Optional[str]
     company: Optional[str]
     location: Optional[str]
@@ -110,7 +110,7 @@ def extract_responsibilities_rule(text: str) -> List[str]:
             extracted.append(line)
     return extracted[:10]
 
-def mock_llm_extract_jd(text: str) -> LLMJDInfo:
+def extract_jd_with_rules(text: str) -> StructuredJDInfo:
     rule_info = parse_jd(text)
     title = extract_title_rule(text) or rule_info.title
     company = extract_company_rule(text) or rule_info.company
@@ -121,7 +121,7 @@ def mock_llm_extract_jd(text: str) -> LLMJDInfo:
         hard_constraints.append("Requires PhD or doctoral-level qualification.")
     if rule_info.requires_many_years:
         hard_constraints.append(f"Requires {rule_info.experience_years}+ years of experience.")
-    return LLMJDInfo(
+    return StructuredJDInfo(
         title=title,
         company=company,
         location=location,
@@ -133,15 +133,13 @@ def mock_llm_extract_jd(text: str) -> LLMJDInfo:
         requires_many_years=rule_info.requires_many_years,
         responsibilities=responsibilities,
         hard_constraints=hard_constraints,
-        extraction_source="mock_llm_with_rule_fallback"
+        extraction_source="rule_based_structured_extractor"
     )
 
-def extract_jd_structured(text: str, use_llm: bool = False) -> LLMJDInfo:
-    if use_llm:
-        return mock_llm_extract_jd(text)
-    return mock_llm_extract_jd(text)
+def extract_jd_structured(text: str) -> StructuredJDInfo:
+    return extract_jd_with_rules(text)
 
-def save_extraction(info: LLMJDInfo, output_path: str) -> None:
+def save_extraction(info: StructuredJDInfo, output_path: str) -> None:
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(asdict(info), f, indent=2, ensure_ascii=False)
 

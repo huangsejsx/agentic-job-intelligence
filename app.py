@@ -6,7 +6,7 @@ import streamlit as st
 
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from llm_jd_extractor import extract_jd_structured
+from structured_jd_extractor import extract_jd_structured
 from parse_resume import parse_resume
 from semantic_decision_engine import make_semantic_decision
 from parse_jd import parse_jd

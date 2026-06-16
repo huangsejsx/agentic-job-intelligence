@@ -4,7 +4,7 @@ from parse_jd import parse_jd
 from parse_resume import parse_resume
 from decision_engine import make_decision
 from semantic_decision_engine import make_semantic_decision
-from llm_jd_extractor import extract_jd_structured
+from structured_jd_extractor import extract_jd_structured
 
 def read_text_file(path: str) -> str:
     with open(path, "r", encoding="utf-8") as f:

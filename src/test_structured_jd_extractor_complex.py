@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from llm_jd_extractor import extract_jd_structured
+from structured_jd_extractor import extract_jd_structured
 
 def read_text(path: str) -> str:
     with open(path, "r", encoding="utf-8") as f:
