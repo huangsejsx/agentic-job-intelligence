@@ -1,10 +1,13 @@
 from dataclasses import dataclass, asdict
+from functools import lru_cache
 from typing import List
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from parse_jd import parse_jd
 from parse_resume import parse_resume
 from match_skills import calculate_skill_match
+
+DEFAULT_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 @dataclass
 class SemanticMatch:
@@ -41,14 +44,29 @@ def build_resume_evidence(resume_info) -> List[str]:
         evidence.append(f"Experience: {exp}")
     return evidence
 
+@lru_cache(maxsize=1)
+def get_embedding_model(model_name: str = DEFAULT_EMBEDDING_MODEL) -> SentenceTransformer:
+    return SentenceTransformer(model_name)
+
 def semantic_match_jd_resume(jd_info, resume_info, threshold: float = 0.45) -> SemanticMatchResult:
     keyword_result = calculate_skill_match(jd_info.required_skills, resume_info.skills)
     missing_skills = keyword_result.missing_skills
     resume_evidence = build_resume_evidence(resume_info)
-    model = SentenceTransformer("all-MiniLM-L6-v2")
-    evidence_embeddings = model.encode(resume_evidence, normalize_embeddings=True)
     semantic_matches = []
     semantic_matched_skills = []
+    if not resume_evidence:
+        final_missing = sorted(set(jd_info.required_skills) - set(keyword_result.matched_skills))
+        return SemanticMatchResult(
+            keyword_matched_skills=keyword_result.matched_skills,
+            keyword_missing_skills=keyword_result.missing_skills,
+            semantic_matches=semantic_matches,
+            final_matched_skills=keyword_result.matched_skills,
+            final_missing_skills=final_missing,
+            keyword_score=keyword_result.skill_match_score,
+            semantic_score=keyword_result.skill_match_score
+        )
+    model = get_embedding_model()
+    evidence_embeddings = model.encode(resume_evidence, normalize_embeddings=True)
     for skill in missing_skills:
         query = f"Job requirement: {skill}"
         query_embedding = model.encode(query, normalize_embeddings=True)
