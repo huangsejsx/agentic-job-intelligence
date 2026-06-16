@@ -335,6 +335,10 @@ Confusion matrix:
 
 ## 8. Streamlit Demo
 
+安装运行依赖：
+
+    pip install -r requirements.txt
+
 运行 Demo：
 
     streamlit run app.py
@@ -359,6 +363,7 @@ Demo 页面包括：
 
 运行不依赖大模型的核心逻辑测试：
 
+    pip install -r requirements.txt
     pip install -r requirements-dev.txt
     pytest
 
