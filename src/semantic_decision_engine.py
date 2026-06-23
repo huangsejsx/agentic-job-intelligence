@@ -4,6 +4,11 @@ from parse_jd import parse_jd, JDInfo
 from parse_resume import parse_resume, ResumeInfo
 from semantic_matcher import semantic_match_jd_resume
 
+APPLY_THRESHOLD = 0.85
+MAYBE_THRESHOLD = 0.45
+REQUIRED_STRONG_MATCH_THRESHOLD = 0.95
+REQUIRED_APPLY_GATE_THRESHOLD = 0.90
+
 @dataclass
 class SemanticDecisionResult:
     decision: str
@@ -54,6 +59,27 @@ def build_hard_filter_score_breakdown(jd_info: JDInfo) -> Dict[str, Any]:
         "missing_preferred_skill_count": len(jd_info.preferred_skills)
     }
 
+def choose_semantic_decision(weighted_score: float, required_score: float) -> tuple[str, str]:
+    if required_score >= REQUIRED_STRONG_MATCH_THRESHOLD:
+        return (
+            "Apply",
+            "Apply because the required skills are strongly matched; missing preferred skills do not block the decision."
+        )
+    if weighted_score >= APPLY_THRESHOLD and required_score >= REQUIRED_APPLY_GATE_THRESHOLD:
+        return (
+            "Apply",
+            "Apply because both the weighted semantic score and required skill score are high."
+        )
+    if weighted_score >= MAYBE_THRESHOLD:
+        return (
+            "Maybe",
+            "Maybe because the role has partial semantic match, but the required skill score is not high enough for Apply."
+        )
+    return (
+        "Pass",
+        "Pass because the semantic match score is low."
+    )
+
 def make_semantic_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> SemanticDecisionResult:
     if jd_info.requires_phd or jd_info.requires_many_years:
         return SemanticDecisionResult(
@@ -84,15 +110,10 @@ def make_semantic_decision(jd_info: JDInfo, resume_info: ResumeInfo) -> Semantic
             "is_semantic_match": item.is_semantic_match
         })
     score = match_result.semantic_score
-    if score >= 0.85:
-        decision = "Apply"
-        explanation = "Apply because the calibrated semantic match score is high and no hard filter is triggered."
-    elif score >= 0.45:
-        decision = "Maybe"
-        explanation = "Maybe because the role has partial semantic match, but the calibrated score is not high enough for Apply."
-    else:
-        decision = "Pass"
-        explanation = "Pass because the semantic match score is low."
+    decision, explanation = choose_semantic_decision(
+        weighted_score=score,
+        required_score=match_result.required_semantic_score
+    )
     score_breakdown = build_semantic_score_breakdown(match_result)
     return SemanticDecisionResult(
         decision=decision,

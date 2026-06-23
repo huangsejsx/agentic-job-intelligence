@@ -1,0 +1,18 @@
+Business Intelligence Analyst Intern
+Company: DemoRetail
+
+DemoRetail is looking for a Business Intelligence Analyst Intern to support sales, marketing, and operations reporting.
+
+Responsibilities:
+- Build dashboards for weekly business reviews.
+- Track conversion, retention, and revenue metrics.
+- Prepare reports for business stakeholders.
+
+Requirements:
+- Strong SQL and data analysis skills.
+- Familiarity with statistics and business metric design.
+- Experience with Excel, Tableau, Power BI, and data visualization.
+
+Preferred Qualifications:
+- Python or pandas experience is preferred.
+- Interest in e-commerce analytics is a plus.

@@ -3,3 +3,11 @@ sample_jd_1.txt,Maybe
 sample_jd_2_hard_filter.txt,Pass
 sample_jd_3_apply.txt,Apply
 sample_jd_4_complex_format.txt,Apply
+sample_jd_5_ai_agent_apply.txt,Apply
+sample_jd_6_recommendation_apply.txt,Apply
+sample_jd_7_bi_maybe.txt,Maybe
+sample_jd_8_cloud_data_engineer_pass.txt,Pass
+sample_jd_9_research_scientist_pass.txt,Pass
+sample_jd_10_nlp_maybe.txt,Maybe
+sample_jd_11_ml_data_science_apply.txt,Apply
+sample_jd_12_analytics_engineer_maybe.txt,Maybe

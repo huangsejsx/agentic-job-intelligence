@@ -269,24 +269,33 @@ Stage 3 的结果显示，semantic matching 可以提高匹配覆盖率，但也
 
 因此项目新增 threshold calibration 脚本，系统比较不同 Apply threshold 和 Maybe threshold 下的 accuracy 和 macro-F1。
 
-最终将 Apply threshold 从 0.75 调整为 0.85：
+最终将 Apply threshold 从 0.75 调整为 0.85，并加入 required skill gate，避免 preferred skills 过度影响最终决策：
 
-    score >= 0.85 -> Apply
-    score >= 0.45 -> Maybe
-    score < 0.45 -> Pass
+    required_semantic_score >= 0.95 -> Apply
+    weighted_semantic_score >= 0.85 and required_semantic_score >= 0.90 -> Apply
+    weighted_semantic_score >= 0.45 -> Maybe
+    weighted_semantic_score < 0.45 -> Pass
     hard filter -> Pass
 
-在当前 toy evaluation set 上，evaluation 从：
+在扩展到 12 个匿名合成 JD 后，单纯使用 weighted semantic score 会暴露两个边界问题：
 
-    accuracy = 0.75
-    macro_f1 = 0.60
+- required skills 全部匹配，但 preferred skill 缺失时，岗位可能被压成 Maybe；
+- preferred skills 匹配较多时，可能掩盖 required skill 的缺口。
+
+因此项目进一步加入 required skill gate。扩展后的 structured workflow evaluation 从：
+
+    accuracy = 0.8333
+    macro_f1 = 0.85
 
 提升到：
 
     accuracy = 1.00
     macro_f1 = 1.00
+    num_samples = 12
 
-需要注意的是，当前 evaluation set 只有 4 个 toy JD，因此该结果主要用于验证 calibration 逻辑，而不能代表真实泛化能力。
+需要注意的是，当前 evaluation set 仍然是匿名合成 toy JD，因此该结果主要用于验证 evaluation、calibration 和 decision rule 逻辑，而不能代表真实泛化能力。
+
+初始 4 个 JD 的 calibration 结果仍保留为项目演进记录；当前公开 evaluation set 已扩展到 12 个匿名合成 JD，用于覆盖更多 Apply / Maybe / Pass 场景。
 
 ### 6.6 Stage 6: Streamlit Demo
 
@@ -310,14 +319,22 @@ Stage 3 的结果显示，semantic matching 可以提高匹配覆盖率，但也
 
 ## 7. Evaluation Results
 
-当前 toy evaluation set 包含 4 个 JD：
+当前 toy evaluation set 包含 12 个匿名合成 JD：
 
     sample_jd_1.txt -> Maybe
     sample_jd_2_hard_filter.txt -> Pass
     sample_jd_3_apply.txt -> Apply
     sample_jd_4_complex_format.txt -> Apply
+    sample_jd_5_ai_agent_apply.txt -> Apply
+    sample_jd_6_recommendation_apply.txt -> Apply
+    sample_jd_7_bi_maybe.txt -> Maybe
+    sample_jd_8_cloud_data_engineer_pass.txt -> Pass
+    sample_jd_9_research_scientist_pass.txt -> Pass
+    sample_jd_10_nlp_maybe.txt -> Maybe
+    sample_jd_11_ml_data_science_apply.txt -> Apply
+    sample_jd_12_analytics_engineer_maybe.txt -> Maybe
 
-### Before calibration
+### Initial 4-Sample Calibration Check
 
     accuracy = 0.75
     macro_f1 = 0.60
@@ -326,18 +343,20 @@ Stage 3 的结果显示，semantic matching 可以提高匹配覆盖率，但也
 
     sample_jd_1.txt was predicted as Apply instead of Maybe
 
-### After calibration
+### Current 12-Sample Structured Workflow Evaluation
 
     accuracy = 1.00
     macro_f1 = 1.00
+    num_samples = 12
 
 Confusion matrix:
 
-    true_Apply  -> pred_Apply: 2
-    true_Maybe  -> pred_Maybe: 1
-    true_Pass   -> pred_Pass: 1
+                 pred_Apply  pred_Maybe  pred_Pass
+    true_Apply            5           0          0
+    true_Maybe            0           4          0
+    true_Pass             0           0          3
 
-该结果说明 threshold calibration 能够缓解 semantic over-matching，但当前样本量较小，不能过度解释。
+该结果说明 threshold calibration 和 required skill gate 能够缓解 semantic over-matching，但当前样本量较小且标签为人工构造，不能过度解释。
 
 ## 8. Streamlit Demo
 
@@ -362,6 +381,8 @@ Demo 页面包括：
 - Scores
 - Structured JD Extraction
 - Skill Matching
+- Required / Preferred Score Breakdown
+- Preferred Matched / Missing Skills
 - Semantic Evidence
 - Workflow Trace
 
@@ -381,6 +402,7 @@ Demo 页面包括：
 - skill matching
 - required / preferred skill weighting
 - decision score breakdown
+- semantic decision required-skill gate
 - baseline decision rule
 
 ## 10. Key Findings
@@ -400,12 +422,12 @@ Demo 页面包括：
 
 当前项目仍有以下局限：
 
-1. Evaluation set 只有 4 个 toy JD；
+1. Evaluation set 仍然较小，目前只有 12 个匿名合成 JD；
 2. 标签是人工构造的，不能代表真实岗位分布；
 3. 当前 structured extraction 是 rule-based，还没有接入真实 LLM JSON extraction；
 4. 当前没有支持 PDF / DOCX 简历上传；
 5. 当前 required / preferred 权重是人工设定，还没有通过更大验证集自动调优；
-6. 当前 semantic score 没有充分考虑 missing critical skills penalty；
+6. 当前 missing critical skills penalty 仍然是 rule-based，还没有学习得到；
 7. 当前 threshold 可能对 toy set 过拟合；
 8. 当前 Demo 还没有支持 batch JD analysis。
 
@@ -418,7 +440,7 @@ Demo 页面包括：
 3. 使用 Pydantic schema 校验 LLM 输出；
 4. 支持 Resume PDF / DOCX 上传；
 5. 使用 validation set 调优 required / preferred skill weighting；
-6. 加入 missing critical skills penalty；
+6. 使用更多验证数据调优 missing critical skills penalty；
 7. 使用 validation / test split 做更可靠的 threshold calibration；
 8. 在 Streamlit 中加入 threshold slider；
 9. 支持 batch JD upload 和结果下载；

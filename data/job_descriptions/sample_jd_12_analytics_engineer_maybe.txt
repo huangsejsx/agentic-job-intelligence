@@ -1,0 +1,18 @@
+Analytics Engineer Intern
+Company: DemoMetrics
+
+DemoMetrics is hiring an Analytics Engineer Intern to help build a clean metrics layer for business reporting.
+
+Responsibilities:
+- Transform raw event data into reusable reporting tables.
+- Maintain dashboards for product and operations teams.
+- Support metric definition and data quality checks.
+
+Requirements:
+- Strong SQL, Python, and data analysis skills.
+- Familiarity with data visualization and dashboard design.
+- Experience with Excel or business reporting workflows.
+
+Preferred Qualifications:
+- Tableau or Power BI experience is preferred.
+- Statistics knowledge is a plus.

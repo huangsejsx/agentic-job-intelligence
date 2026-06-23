@@ -1,0 +1,18 @@
+Machine Learning Data Science Intern
+Company: DemoModeling
+
+DemoModeling is looking for a Machine Learning Data Science Intern to support predictive modeling and experimentation.
+
+Responsibilities:
+- Clean and analyze structured datasets.
+- Build machine learning baselines and compare model performance.
+- Communicate modeling results to product and business teams.
+
+Requirements:
+- Strong Python, SQL, pandas, NumPy, and scikit-learn skills.
+- Familiarity with statistics, machine learning, and data analysis.
+- Experience with A/B testing or experiment analysis.
+
+Preferred Qualifications:
+- Deep learning experience is a plus.
+- Interest in recommendation or ranking problems is preferred.

@@ -1,0 +1,18 @@
+Cloud Data Engineering Intern
+Company: DemoCloudData
+
+We are looking for a Cloud Data Engineering Intern to support large-scale data platform migration.
+
+Responsibilities:
+- Build data pipelines for batch processing workloads.
+- Maintain data warehouse jobs and cloud infrastructure scripts.
+- Monitor pipeline failures and improve reliability.
+
+Requirements:
+- Experience with Spark, Hadoop, AWS, Azure, or GCP.
+- Familiarity with distributed systems and production data pipelines.
+- Strong SQL skills.
+
+Preferred Qualifications:
+- Python experience is preferred.
+- Knowledge of machine learning pipelines is a plus.

@@ -1,0 +1,18 @@
+AI Agent Engineering Intern
+Company: DemoAgentic
+
+We are looking for an AI Agent Engineering Intern to help build internal tools for job intelligence, document analysis, and retrieval-based assistants.
+
+Responsibilities:
+- Build small agent workflows for information extraction and scoring.
+- Use Python to connect retrieval, prompt templates, and evaluation scripts.
+- Prototype simple Streamlit demos for non-technical users.
+
+Requirements:
+- Strong Python skills.
+- Experience with RAG, LangChain, and agentic workflows.
+- Familiarity with data analysis and evaluation.
+
+Preferred Qualifications:
+- Interest in LLM applications and structured extraction.
+- Experience building user-facing AI demos is a plus.

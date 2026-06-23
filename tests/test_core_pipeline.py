@@ -8,6 +8,7 @@ from match_skills import (
 )
 from parse_jd import parse_jd
 from parse_resume import parse_resume
+from semantic_decision_engine import choose_semantic_decision
 
 
 def test_parse_jd_extracts_skills_and_hard_filters():
@@ -182,3 +183,23 @@ def test_make_decision_exposes_weighted_score_breakdown():
     assert decision.score_breakdown["preferred_weight"] == 0.2
     assert decision.score_breakdown["matched_required_skill_count"] == 2
     assert decision.score_breakdown["missing_preferred_skill_count"] == 2
+
+
+def test_semantic_decision_does_not_block_apply_on_missing_preferred_skills():
+    decision, explanation = choose_semantic_decision(
+        weighted_score=0.8,
+        required_score=1.0
+    )
+
+    assert decision == "Apply"
+    assert "preferred skills do not block" in explanation
+
+
+def test_semantic_decision_requires_strong_required_score_for_apply():
+    decision, explanation = choose_semantic_decision(
+        weighted_score=0.8857,
+        required_score=0.8571
+    )
+
+    assert decision == "Maybe"
+    assert "required skill score is not high enough" in explanation

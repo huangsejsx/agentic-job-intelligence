@@ -1,0 +1,18 @@
+Recommendation Algorithm Intern
+Company: DemoRecSys
+
+We are hiring a Recommendation Algorithm Intern to support ranking, retrieval, and user behavior modeling for a content platform.
+
+Responsibilities:
+- Analyze user-item interaction logs and model recommendation quality.
+- Build baselines for ranking and recommendation tasks.
+- Evaluate experiments using offline metrics and A/B testing results.
+
+Requirements:
+- Strong Python and SQL skills.
+- Familiarity with machine learning, statistics, and data analysis.
+- Experience with recommendation systems, ranking, and A/B testing.
+
+Preferred Qualifications:
+- Experience with pandas, NumPy, and scikit-learn is preferred.
+- Interest in retrieval or sequential recommendation is a plus.

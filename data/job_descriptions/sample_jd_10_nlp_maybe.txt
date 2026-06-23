@@ -1,0 +1,18 @@
+NLP Algorithm Intern
+Company: DemoLanguageAI
+
+We are looking for an NLP Algorithm Intern to work on document understanding and retrieval-based search.
+
+Responsibilities:
+- Analyze text data and build NLP model prototypes.
+- Evaluate semantic retrieval quality and ranking performance.
+- Work with applied researchers to test LLM-based features.
+
+Requirements:
+- Strong Python skills.
+- Familiarity with deep learning, NLP, LLMs, and retrieval.
+- Understanding of machine learning evaluation.
+
+Preferred Qualifications:
+- Experience with RAG or LangChain is preferred.
+- Experience with recommendation or ranking systems is a plus.

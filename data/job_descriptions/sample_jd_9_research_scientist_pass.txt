@@ -1,0 +1,17 @@
+Machine Learning Research Scientist
+Company: DemoResearchLab
+
+DemoResearchLab is hiring a Machine Learning Research Scientist for deep learning and natural language processing research.
+
+Responsibilities:
+- Design and train large-scale deep learning models.
+- Publish research findings and collaborate with applied teams.
+- Build prototypes for NLP and LLM applications.
+
+Requirements:
+- PhD in Computer Science, Machine Learning, Statistics, or a related field.
+- 4+ years of research or industry experience.
+- Strong Python, PyTorch, deep learning, NLP, and LLM experience.
+
+Preferred Qualifications:
+- Experience with retrieval-augmented generation is preferred.
