@@ -394,6 +394,8 @@ Demo 页面包括：
     pip install -r requirements-dev.txt
     pytest
 
+GitHub Actions 会在每次 push 和 pull request 时自动运行同一组测试。
+
 当前测试覆盖：
 
 - JD parser
