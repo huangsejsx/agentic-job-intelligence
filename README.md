@@ -1,5 +1,7 @@
 # Agentic Job Intelligence
 
+[![CI](https://github.com/huangsejsx/agentic-job-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/huangsejsx/agentic-job-intelligence/actions/workflows/ci.yml)
+
 > Public repository note: this repo uses anonymized sample data. Generated result files are excluded because they may contain resume-derived information.
 
 ## 项目亮点
@@ -110,6 +112,11 @@ Agentic Job Intelligence 是一个面向求职场景的智能岗位分析系统�
     ├── README.md
     ├── requirements.txt
     ├── requirements-dev.txt
+    ├── .github/
+    │   └── workflows/
+    │       └── ci.yml
+    ├── .streamlit/
+    │   └── config.toml
     ├── assets/
     │   └── demo.jpg
     ├── data/
@@ -117,7 +124,8 @@ Agentic Job Intelligence 是一个面向求职场景的智能岗位分析系统�
     │   │   ├── sample_jd_1.txt
     │   │   ├── sample_jd_2_hard_filter.txt
     │   │   ├── sample_jd_3_apply.txt
-    │   │   └── sample_jd_4_complex_format.txt
+    │   │   ├── sample_jd_4_complex_format.txt
+    │   │   └── sample_jd_5_to_12_*.txt
     │   ├── labels/
     │   │   └── job_labels.csv
     │   └── resumes/
